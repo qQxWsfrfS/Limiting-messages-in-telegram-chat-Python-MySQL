@@ -1,0 +1,33 @@
+
+
+bot_token:
+  //Your Token
+
+chat_group_id:
+  //Telegram Group Id
+
+admin_id:
+  //AdminId
+
+
+messageConsoleStream:
+  //false or true
+
+
+
+######DATABASE#####
+
+mySqlHost:
+  //host
+
+mySqlPort:
+  //port
+
+mySqlDatabase:
+  //database
+
+mySqlUser:
+  //username
+
+mySqlPassword:
+  //password
