@@ -3,6 +3,21 @@
 
 
 
+createTableMessage:
+  CREATE TABLE IF NOT EXISTS message (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  time TIMESTAMP,
+  user_id BIGINT NOT NULL);
+
+
+createTableUsers:
+  CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT NOT NULL,
+  time_start TIMESTAMP DEFAULT null,
+  time_finish TIMESTAMP DEFAULT null,
+  status INT
+  );
 
 
 
