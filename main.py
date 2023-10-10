@@ -1,5 +1,9 @@
 
-
+import os
+if __name__ == "__main__":
+    if os.path.isfile("cfg.sample.yml"):
+        os.rename("cfg.sample.yml", "cfg.yml")
+        
 from database.database import DatabaseObject
 from botAttr import BotConfig, ADMIN_CONFIG
 from utils.filters import startMessage, groupByHandler, messageForUser
@@ -19,7 +23,7 @@ from logging import StreamHandler
 import asyncio
 import logging
 import sys
-import os
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -734,8 +738,6 @@ async def addNewUserHandler(callback : CallbackQuery, state : FSMContext):
 def main():
     dp.startup.register(set_main_menu)
 
-    if os.path.isfile("cfg.sample.yml"):
-        os.rename("cfg.sample.yml", "cfg.yml")
     logger.info("Бот запущен")
     logger.info(db.startDatabaseInfo)
 
