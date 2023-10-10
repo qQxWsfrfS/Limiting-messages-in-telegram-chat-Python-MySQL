@@ -103,15 +103,17 @@ class BotConfig:
         try:
             list_mode = kwargs.get("list_mode", False)
             if list_mode:
-                text = f"id: <code>{list_info[1]}</code> | status: <code>{list_info[4]}</code>\n"
+                text = f"---------------------\nid: <code>{list_info[1]}</code> |\nstatus: <code>{list_info[4]}</code> |\ntime: {str(list_info[2]) + '-'+ str(list_info[3]) if list_info[2] else 'Отсутствует'} |\nКомментарий: {list_info[5] if list_info[5] else 'Отсутствует'}\n\n"
                 return text
             text = f"""
             <b>Информация о пользователе</b>
             
-id:<code>{list_info[1]}</code>
-start: <code>{list_info[2] if list_info[2] else "Отсутствует"}</code>
-finish: <code>{list_info[3] if list_info[3] else "Отсутствует"}</code>
-status : <code>{list_info[4]}</code>
+⚪️ id:<code>{list_info[1]}</code>
+⚪️ start: <code>{list_info[2] if list_info[2] else "Отсутствует"}</code>
+⚪️ finish: <code>{list_info[3] if list_info[3] else "Отсутствует"}</code>
+⚪️ status : <code>{list_info[4]}</code>
+⚪️ Комментарий: 
+<code>{list_info[-1] if list_info[-1] else "Отсутствует"}</code>
 
 |{list_info[0]}"""
 

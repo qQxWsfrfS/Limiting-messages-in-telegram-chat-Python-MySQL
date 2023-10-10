@@ -10,4 +10,11 @@ class FsmFillState(StatesGroup):
     paggination_users_state = State()
     ##########
     set_hours_time_state = State()
+    #########################
+    add_new_user_state = State()
+    ###########################
+    add_comment_state = State()
+    ###########################
+    user_message_state = State()
+
 

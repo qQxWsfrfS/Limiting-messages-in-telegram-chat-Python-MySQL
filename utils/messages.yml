@@ -16,7 +16,8 @@ createTableUsers:
   user_id BIGINT NOT NULL,
   time_start TIMESTAMP DEFAULT null,
   time_finish TIMESTAMP DEFAULT null,
-  status INT
+  status INT, 
+  comment VARCHAR(1000)
   );
 
 

@@ -1,5 +1,4 @@
 
-
 bot_token:
   //Your Token
 
@@ -9,11 +8,8 @@ chat_group_id:
 admin_id:
   //AdminId
 
-
 messageConsoleStream:
   //false or true
-
-
 
 ######DATABASE#####
 

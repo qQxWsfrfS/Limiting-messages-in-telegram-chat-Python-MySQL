@@ -29,9 +29,15 @@ common_config_markup : InlineKeyboardMarkup = InlineKeyboardMarkup(inline_keyboa
 
 back_to_menu_mrkp : InlineKeyboardMarkup = InlineKeyboardMarkup(inline_keyboard = [[button_back_to_menu]])
 
+clear_time_user_btn : InlineKeyboardButton = InlineKeyboardButton(text = "Удалить текущее время", callback_data = "clear_current_time")
+
+change_time_user_mrkp : InlineKeyboardMarkup = InlineKeyboardMarkup(inline_keyboard = [[clear_time_user_btn, button_back_to_menu]])
 
 
-change_status_user_button : InlineKeyboardButton = InlineKeyboardButton(text = "Изменить статус", callback_data = "status_set")
-change_time_user : InlineKeyboardButton = InlineKeyboardButton(text = "Задать время", callback_data = "set_time_user")
+change_status_user_button : InlineKeyboardButton = InlineKeyboardButton(text = "Изменить статус 🔮", callback_data = "status_set")
+change_time_user : InlineKeyboardButton = InlineKeyboardButton(text = "Задать время 🕧", callback_data = "set_time_user")
+change_comment_btn : InlineKeyboardButton = InlineKeyboardButton(text = "Изменить комментарий 📖", callback_data = "change_comment")
+delete_user_btn : InlineKeyboardButton = InlineKeyboardButton(text = "Удалить пользователя ❌", callback_data = "delete_user")
 
-personaly_user_settings : InlineKeyboardMarkup = InlineKeyboardMarkup(inline_keyboard = [[change_status_user_button, change_time_user], [button_back_to_menu]])
+personaly_user_settings : InlineKeyboardMarkup = InlineKeyboardMarkup(inline_keyboard = [[change_status_user_button, change_time_user], [change_comment_btn],
+                                                                                         [delete_user_btn] , [button_back_to_menu]])

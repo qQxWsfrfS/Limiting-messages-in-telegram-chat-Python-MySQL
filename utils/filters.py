@@ -16,3 +16,6 @@ def startMessage(message : Message) -> bool:
 
 def groupByHandler(message : Message) -> bool:
     return message.chat.id == groupById
+
+def messageForUser(message : Message) -> bool:
+    return message.text.startswith("@") and message.chat.id == botCfg.adminId

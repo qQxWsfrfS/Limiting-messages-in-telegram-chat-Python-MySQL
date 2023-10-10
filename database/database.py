@@ -130,18 +130,18 @@ PASSWORD: {"*"*len(str(self._password))}"""
 
     @staticmethod
     async def getTimeDifference(userMessages : tuple) -> bool:
-        print(f"type user message - {type(userMessages)}")
+
         columns = ("id", "time", "user_id")
         time_difference_secconds = int((datetime.datetime.now() - userMessages[-1 * int(BotConfig.messages_limit)][1]).total_seconds())
         permission_seconds = int(BotConfig.hours_for_limit) * 60 * 60
 
-        print(f"{time_difference_secconds} + and + {permission_seconds}")
+
         if (time_difference_secconds > permission_seconds):
-            print("Можно комментить")
+
             return True
             #можно комментировать
         else:
-            print("нельзя комментить")
+
             return False
 
 
@@ -153,50 +153,24 @@ PASSWORD: {"*"*len(str(self._password))}"""
             formatted_date_time = now.strftime(BASE_TIME_SAMPLE)
 
 
-            print(BotConfig.hours_for_limit)
+
             dt_add_limit_time_hours = now + datetime.timedelta(hours = int(BotConfig.hours_for_limit))
-            print(dt_add_limit_time_hours)
+
             async with conn.cursor() as cursor:
 
                 await cursor.execute(f'''SELECT * FROM users WHERE user_id = '{telegram_id}';''')
 
                 response = await cursor.fetchone()
-                print(f"res {response}")
+
 
                 if not response:
-                    await cursor.execute(
-                        f'''INSERT INTO users(user_id, status) VALUES ({telegram_id} , 0)''')
-
-                    await cursor.execute(f'''INSERT INTO message(time, user_id) VALUES ('{formatted_date_time}', {telegram_id});''')
-
-                    await conn.commit()
-                    #Новый пользователь
-                else:
-
-                    if response[-1] == 1:
-
-                        if response[-2] > datetime.datetime.now():
-                            await cursor.execute(
-                                f'''INSERT INTO message(time, user_id) VALUES ('{formatted_date_time}', {telegram_id});''')
-
-                            await conn.commit()
-                            return
-
-                        else:
-                            #Премиум кончился
-                            await self.updateTimeStartFinish(int(response[0]))
-                            logger.info(f"У ползователя {response[1]} закончился премиум")
-                            return
-
-
-
                     await cursor.execute(f"""SELECT * FROM message WHERE user_id = {telegram_id};""")
 
                     usersMessages = await cursor.fetchall()
 
                     countMessages = len(usersMessages)
 
-                    print(f'user messages = {usersMessages} count = {countMessages}')
+
 
                     if countMessages <= int(BotConfig.messages_limit):
                         await cursor.execute(
@@ -215,6 +189,95 @@ PASSWORD: {"*"*len(str(self._password))}"""
                         else:
 
                             return "NOTPERMISSION"
+                else:
+
+                    #Пользователь есть в таблице users
+
+                    if response[-2] == 1:
+
+
+                        #await self.updateTimeStartFinish(int(response[0]))
+                        await cursor.execute(
+                            f'''INSERT INTO message(time, user_id) VALUES ('{formatted_date_time}', {telegram_id});''')
+                        await conn.commit()
+                        return
+
+                    else:
+
+                        #Если статус равен 0 проверяем время
+
+                        if response[-3]!=None:
+
+                            if response[-3] > datetime.datetime.now():
+                                await cursor.execute(
+                                    f'''INSERT INTO message(time, user_id) VALUES ('{formatted_date_time}', {telegram_id});''')
+
+                                await conn.commit()
+                                return
+                            else:
+
+                                #Cтатус 0 и время вышло проводим проверку
+
+                                await cursor.execute(f"""SELECT * FROM message WHERE user_id = {telegram_id};""")
+
+                                usersMessages = await cursor.fetchall()
+
+                                countMessages = len(usersMessages)
+
+
+
+                                if countMessages <= int(BotConfig.messages_limit):
+                                    await cursor.execute(
+                                        f'''INSERT INTO message(time, user_id) VALUES ('{formatted_date_time}', {telegram_id});''')
+
+                                    await conn.commit()
+
+                                else:
+                                    permissionMessage = await self.getTimeDifference(usersMessages)
+                                    if permissionMessage:
+                                        await cursor.execute(
+                                            f'''INSERT INTO message(time, user_id) VALUES ('{formatted_date_time}', {telegram_id});''')
+
+                                        await conn.commit()
+
+                                    else:
+
+                                        return "NOTPERMISSION"
+
+                        else:
+                            #Время не указано и статус 0
+
+                            await cursor.execute(f"""SELECT * FROM message WHERE user_id = {telegram_id};""")
+
+                            usersMessages = await cursor.fetchall()
+
+                            countMessages = len(usersMessages)
+
+
+
+                            if countMessages <= int(BotConfig.messages_limit):
+                                await cursor.execute(
+                                    f'''INSERT INTO message(time, user_id) VALUES ('{formatted_date_time}', {telegram_id});''')
+
+                                await conn.commit()
+
+                            else:
+                                permissionMessage = await self.getTimeDifference(usersMessages)
+                                if permissionMessage:
+                                    await cursor.execute(
+                                        f'''INSERT INTO message(time, user_id) VALUES ('{formatted_date_time}', {telegram_id});''')
+
+                                    await conn.commit()
+
+                                else:
+
+                                    return "NOTPERMISSION"
+
+
+
+
+
+
 
 
         except Exception as ex:
@@ -262,34 +325,32 @@ PASSWORD: {"*"*len(str(self._password))}"""
                 await cursor.execute(f"""SELECT * FROM users WHERE id = {id};""")
 
                 response = await cursor.fetchone()
-                print(f"info about user = {response}")
-                if response[-1] == 1:
+
+                if response[-2] == 1:
                     await cursor.execute(f"""UPDATE users SET status = 0 WHERE id = {id};""")
                     await conn.commit()
                     return True
 
                 else:
-                    if response[-2] == None or response[-2] < datetime.datetime.now():
-                        return False # Если нужно задать время
 
-                    else:
-                        await cursor.execute(f"""UPDATE users SET status = 1 WHERE id = {id};""")
-                        await conn.commit()
+                    await cursor.execute(f"""UPDATE users SET status = 1 WHERE id = {id};""")
+                    await conn.commit()
 
-                        return  True
+                    return  True
 
 
         except Exception as ex:
             logger.exception(f"Ошибка: _{ex}")
 
 
-    async def updateTimeStartFinish(self, id : int, hours : int = None):
+    async def updateTimeStartFinish(self, id : int, hours : int = None, **kwargs):
         conn = await self.connection()
         try:
-
+            dt_add_limit_time_hours = None
             now = datetime.datetime.now()
 
-            dt_add_limit_time_hours = now + datetime.timedelta(hours=hours)
+            if hours is not None:
+                dt_add_limit_time_hours = now + datetime.timedelta(hours=hours)
 
             async with conn.cursor() as cursor:
                 if hours is not None:
@@ -298,15 +359,66 @@ PASSWORD: {"*"*len(str(self._password))}"""
                                         WHERE id = {id};""")
 
                 else:
-                    await cursor.execute(f"""UPDATE users 
-                                    SET time_start = NULL, time_finish = NULL
-                                    WHERE id = {id};""")
+
+                    telegram_id = kwargs.get("telegram_id", False)
+                    if telegram_id:
+                        await cursor.execute(f"""UPDATE users 
+                                                                SET time_start = '{now.strftime(BASE_TIME_SAMPLE)}', time_finish = '{dt_add_limit_time_hours.strftime(BASE_TIME_SAMPLE)}'
+                                                                WHERE user_id = {telegram_id};""")
+                    else:
+
+                        await cursor.execute(f"""UPDATE users 
+                                        SET time_start = NULL, time_finish = NULL, status = 0
+                                        WHERE id = {id};""")
 
                 await conn.commit()
                 return True
 
         except Exception as ex:
             logger.exception(f"Ошибка: _{ex}")
+
+
+    async def addNewUserInUsers(self, telegram_id : int) -> bool:
+        conn = await self.connection()
+        try:
+            async with conn.cursor() as cursor:
+                await cursor.execute(f'''INSERT INTO users(user_id, status) VALUES('{telegram_id}', 0);''')
+
+                await conn.commit()
+                return True
+
+        except Exception as ex:
+            logger.exception(f"Ошибка: _{ex}")
+
+
+    async def deleteUser(self, id : int) -> bool:
+        conn = await self.connection()
+        try:
+            async with conn.cursor() as cursor:
+                await cursor.execute(f'''DELETE FROM users WHERE id = {id};''')
+                await conn.commit()
+                return True
+
+
+
+        except Exception as ex:
+            logger.exception(f"Ошибка: _{ex}")
+            return False
+
+
+    async def setCommetForUser(self, id : int, comment : str) -> bool:
+        conn = await self.connection()
+        try:
+            async with conn.cursor() as cursor:
+                await cursor.execute(f'''UPDATE users SET comment = '{comment}' WHERE id = {id};''')
+                await conn.commit()
+                return True
+
+        except Exception as ex:
+            logger.exception(f"Ошибка: _{ex}")
+            return False
+
+
 
 
 
