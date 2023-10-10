@@ -14,11 +14,11 @@ Enter your data in the cfg.sample.yml file, which contains basic parameters such
 
 and other settings to connect to MySQL database
 
-![paint1.png](..%2F..%2F..%2Fpaint1.png)
+![paint1.png](images%2Fpaint1.png)
 
 <b>Add the bot to your group and assign it as an administrator</b>
 
-![1 (1).gif](..%2F..%2F..%2F..%2FDownloads%2F1%20%281%29.gif)
+![1 (1).gif](images%2F1%20%281%29.gif)
 
 <b>start -> python main.py</b>
 
@@ -40,8 +40,8 @@ Here you can configure permissions for each user separately. If a user has statu
 
 You can also add a comment for a specific user that only you will see
 
-![video5273957472820803010.gif](..%2F..%2F..%2F..%2FDownloads%2Fvideo5273957472820803010.gif)
+![video5273957472820803010.gif](images%2Fvideo5273957472820803010.gif)
 
 A user who does not have access to this bot can keep in touch with the administrator by writing to the bot in a private message. In the meantime, the administrator will see the notification and can reply to the user by specifying his id via <i>@</i>
 
-![video5273957472820803054.gif](..%2F..%2F..%2F..%2FDownloads%2Fvideo5273957472820803054.gif)
+![video5273957472820803054.gif](images%2Fvideo5273957472820803054.gif)
